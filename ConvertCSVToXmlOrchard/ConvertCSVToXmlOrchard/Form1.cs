@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace ConvertCSVToXmlOrchard
 {
@@ -42,6 +43,8 @@ namespace ConvertCSVToXmlOrchard
                 {
                     string filenames = textBox1.Text;
                     string csv = File.ReadAllText(textBox1.Text);
+
+
                     XDocument doc = CsvToXml.ConvertCsvToXML(csv, filenames);
                     SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                     saveFileDialog1.Filter = "Xml files (*.xml)|*.xml";
@@ -87,13 +90,13 @@ namespace ConvertCSVToXmlOrchard
                         XDocument xmlDoc = XDocument.Load(filename);
                         string dirName = new DirectoryInfo(filenames).Name.Replace(".csv", "");
                         var items = from item in xmlDoc.Elements("Orchard").Elements("Content").Elements(dirName)
-                                    where item != null &&  (item.Attribute("Id").Value != @"/Identifier=e9402713bc744511a11cc8de980cf0fb")
+                                    where item != null && (item.Attribute("Id").Value != @"/Identifier=e9402713bc744511a11cc8de980cf0fb")
                                     select item;
                         //foreach (var item in items)
                         //
 
-                            //assign new value to the sub-element author
-                            //item.Element("TextField.CompanyName").Attribute("Text").Value) = "Faii";
+                        //assign new value to the sub-element author
+                        //item.Element("TextField.CompanyName").Attribute("Text").Value) = "Faii";
 
                         //}
                         xmlDoc.Save(filename);
@@ -123,12 +126,26 @@ namespace ConvertCSVToXmlOrchard
 
         private void btn_save_Click(object sender, EventArgs e)
         {
+            List<CsvToXml> doc = new List<CsvToXml>();
+            XmlSerializer searial = new XmlSerializer(typeof(List<CsvToXml>));
+
+            using (FileStream fs = new FileStream(Environment.CurrentDirectory + "\\jacob.xml", FileMode.Create, FileAccess.Write))
+            {
+                searial.Serialize(fs, doc);
+                MessageBox.Show("Created");
+            }
+
             savefile();
         }
 
         private void btn_mdf_Click(object sender, EventArgs e)
         {
             Modified();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 

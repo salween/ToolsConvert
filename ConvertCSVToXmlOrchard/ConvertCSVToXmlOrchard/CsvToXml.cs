@@ -14,13 +14,10 @@ namespace ConvertCSVToXmlOrchard
     /// </summary>
     public class CsvToXml
     {
-        /// <summary>
-        /// Conversion Method
-        /// </summary>
-        /// <param name="csvString">cvs string to converted</param>
-        /// <param name="separatorField">separator used by the csv file</param>
-        ///   /// <param name="filename">file name </param>
-        /// <returns>XDocument with the content of csv file in Xml Format</returns>
+        public int Id { get; set; }
+
+        public String Name { get; set; }
+
         public static XDocument ConvertCsvToXML(string csvString, string filename)
         {
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
@@ -28,6 +25,7 @@ namespace ConvertCSVToXmlOrchard
             //split the rows
             var sep = new[] { "\r\n" };
             string[] rows = csvString.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+
             //Create the declaration
             var xsurvey = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"));
             XComment comm = new XComment("Exported from Orchard"); // Create the Comment
@@ -87,40 +85,7 @@ namespace ConvertCSVToXmlOrchard
             return xtype;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="firstRow"></param>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        //private static XElement Part(string firstRow, string filename)
-        //{
-        //    var xparts = new XElement("Parts"); //Create the Parts
-        //    string[] columnname = SplitCSV(Regex.Replace(firstRow, "[ |-]", ""));
-        //    string[] columnnamedisplay = SplitCSV(firstRow.Replace(" ", ""));
 
-        //    var xfilenamecp = new XElement(filename + 1, new XAttribute("ContentPartSettings.Attachable", "True"), new XAttribute("ContentPartLayoutSettings.Placeable", "False"));
-
-        //    for (int i = 0; i < columnname.Length; i++)
-        //    {
-        //        //Create the element var and Attributes with the field name and value
-        //        var xvar = new XElement($"{FirstCharToUpper(columnname[i].ToLower())}.TextField",
-        //                                new XAttribute("DisplayName", FirstCharToUpper(columnnamedisplay[i].ToLower())), new XAttribute("TextFieldSettings.Required", "False"), new XAttribute("FieldIndexing.Included", "True"));
-        //        xfilenamecp.Add(xvar);
-        //    }
-        //    xparts.Add(xfilenamecp);
-        //    return xparts;
-        //}
-
-        /// <summary>
-        /// Private. Take a csv line and convert in a row - var node
-        /// with the fields values as attributes. 
-        /// </summary>
-        /// <param name="row">csv row to process</param>
-        /// <param name="firstRow">First row with the fields names</param>
-        /// <param name="separatorField">separator string use in the csv fields</param>
-        /// <param name="FileName">string name file replace .csv </param>
-        /// <returns>XElement with the csv information of the inputed row</returns>
         private static XElement rowCreator(string row, string firstRow, string FileName)
         {
             //var sep = new[] { "\t" };

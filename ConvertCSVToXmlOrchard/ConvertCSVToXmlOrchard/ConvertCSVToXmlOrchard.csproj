@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvToXml.cs" />
-    <Compile Include="CsvToXmlModified.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
