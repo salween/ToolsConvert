@@ -9,95 +9,107 @@ using System.Xml.Linq;
 
 namespace ConvertCSVToXmlOrchard
 {
-    /// <summary>
-    /// Conversion the input file from csv format to XML
-    /// </summary>
     public class CsvToXml
     {
-        public int Id { get; set; }
-
-        public String Name { get; set; }
 
         public static XDocument ConvertCsvToXML(string csvString, string filename)
         {
+
+
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
+
+
+
+
 
             //split the rows
             var sep = new[] { "\r\n" };
             string[] rows = csvString.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
-            //Create the declaration
-            var xsurvey = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"));
-            XComment comm = new XComment("Exported from Orchard"); // Create the Comment
-            var xhead = new XElement("Orchard");// Create the head
+            //Create the 
+            var xsyntax = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")); //<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
-            var xconD = new XElement("ContentDefinition"); //Create the ContentDefinition
+            XComment comm = new XComment("Exported from Orchard"); // Create the Comment --->   <!--Exported from Orchard-->
 
-            var xroot = new XElement("Content"); //Create the Content
+            var xHead = new XElement("Orchard");// Create the head  -->  <Orchard>
+
+            var xContentDe = new XElement("ContentDefinition"); //Create the ContentDefinition -->  <ContentDefinition>
+
+            var xContent = new XElement("Content"); //Create the Content -->  <Content>
 
             for (int i = 0; i < rows.Length; i++)
             {
-                //Create each row
+
+
                 if (i > 0)
                 {
-                    //string dirName = new DirectoryInfo(filename).Name.Replace(".csv","");
-                    xroot.Add(rowCreator(rows[i], rows[0], dirName));
+                    xContent.Add(Content(rows[i], rows[0], dirName));
 
                 }
             }
 
-            xconD.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
-            xhead.Add(Reciperow(), xconD, xroot);
-            xsurvey.Add(comm, xhead);
-            return xsurvey;
+            xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
+            xHead.Add(Reciperow(), xContentDe, xContent);
+            xsyntax.Add(comm, xHead);
+            return xsyntax;
         }
 
         private static XElement Reciperow()
         {
-            var xrecipe = new XElement("Recipe");// Create the recipe
-            var xrecip = new XElement("ExportUtc", DateTime.UtcNow);
-            xrecipe.Add(xrecip);
-            return xrecipe;
+            var xRecipe = new XElement("Recipe");// Create the recipe
+            var xExportUtc = new XElement("ExportUtc", DateTime.UtcNow);
+            xRecipe.Add(xExportUtc);
+            return xRecipe;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Filename"></param>
-        /// <returns></returns>
+
         private static XElement Type(string Filename)
         {
-            var xtype = new XElement("Types");
+            var xTypes = new XElement("Types");
 
-            var xfilenamect = new XElement(Filename, new XAttribute("ContentTypeSettings.Creatable", "True"), new XAttribute("ContentTypeSettings.Draftable", "True"),
+            var xattendeestypes = new XElement(Filename, new XAttribute("ContentTypeSettings.Creatable", "True"), new XAttribute("ContentTypeSettings.Draftable", "True"),
                 new XAttribute("ContentTypeSettings.Listable", "True"), new XAttribute("ContentTypeSettings.Securable", "True"),
                 new XAttribute("TypeIndexing.Indexes", Filename), new XAttribute("ContentTypeLayoutSettings.Placeable", "False")
                 , new XAttribute("DisplayName", Filename)); //Create the contenttypes
 
-            var xfilenamecp = new XElement(Filename + 1); //Create the contentpart
-            var comp = new XElement("CommonPart", new XAttribute("DateEditorSettings.ShowDateEditor", "False"), new XAttribute("OwnerEditorSettings.ShowOwnerEditor", "True"));
-            var xIdenP = new XElement("IdentityPart"); //Create the IdentityPart
-            var xTitleP = new XElement("TitlePart"); //Create the TitlePart
+            var xattendees1 = new XElement(Filename + 1); //Create --> <attendees1 />
 
-            xfilenamect.Add(xfilenamecp, comp, xIdenP, xTitleP);
-            xtype.Add(xfilenamect);
+            var CommonPart = new XElement("CommonPart", new XAttribute("DateEditorSettings.ShowDateEditor", "False"), new XAttribute("OwnerEditorSettings.ShowOwnerEditor", "True"));
 
-            return xtype;
+            var xIdentityPart = new XElement("IdentityPart"); //Create --> <IdentityPart />
+
+            var xTitlePart = new XElement("TitlePart"); //Create -->  <TitlePart />
+
+            xattendeestypes.Add(xattendees1, CommonPart, xIdentityPart, xTitlePart);
+
+            xTypes.Add(xattendeestypes);
+
+            return xTypes;
         }
 
 
-        private static XElement rowCreator(string row, string firstRow, string FileName)
+        private static XElement Content(string row, string firstRow, string FileName)
         {
             //var sep = new[] { "\t" };
             string[] Text = SplitCSV(row);
             string[] name = SplitCSV(firstRow.Replace(" ", ""));
             string id = Guid.NewGuid().ToString().Replace("-", "");
 
-            var xrow = new XElement(FileName, new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
-            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
-            var common = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
-            xrow.Add(Identifier, common);
 
+            int index = 1;
+
+
+            var xrow = new XElement(FileName, new XAttribute("Import Id", id), new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
+
+            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
+
+            XElement ImportID = new XElement("ImportID", index);
+
+            var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
+
+            xrow.Add(Identifier, ImportID, commonP);
+
+            index = index + 1;
 
             for (int i = 0; i < Text.Length; i++)
             {
