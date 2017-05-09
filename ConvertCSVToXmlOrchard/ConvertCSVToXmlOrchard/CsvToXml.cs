@@ -5,28 +5,29 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
+using CsvHelper;
+
 
 namespace ConvertCSVToXmlOrchard
 {
+
     public class CsvToXml
     {
+        private static long index = 1;
 
         public static XDocument ConvertCsvToXML(string csvString, string filename)
         {
-
+            index = 1;
 
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
-
-
-
-
 
             //split the rows
             var sep = new[] { "\r\n" };
             string[] rows = csvString.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
-            //Create the 
+            //Create the element
             var xsyntax = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")); //<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
             XComment comm = new XComment("Exported from Orchard"); // Create the Comment --->   <!--Exported from Orchard-->
@@ -88,6 +89,7 @@ namespace ConvertCSVToXmlOrchard
         }
 
 
+
         private static XElement Content(string row, string firstRow, string FileName)
         {
             //var sep = new[] { "\t" };
@@ -96,14 +98,11 @@ namespace ConvertCSVToXmlOrchard
             string id = Guid.NewGuid().ToString().Replace("-", "");
 
 
-            int index = 1;
-
-
-            var xrow = new XElement(FileName, new XAttribute("Import Id", id), new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
+            var xrow = new XElement(FileName, new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
 
             XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
 
-            XElement ImportID = new XElement("ImportID", index);
+            XElement ImportID = new XElement("ImportID", new XAttribute("Text", index));
 
             var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
 
