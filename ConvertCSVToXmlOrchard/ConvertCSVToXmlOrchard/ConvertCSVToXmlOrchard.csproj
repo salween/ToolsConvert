@@ -93,7 +93,10 @@
   <ItemGroup>
     <Content Include="bin\Debug\ConvertCSVToXmlOrchard.exe" />
     <Content Include="bin\Debug\ConvertCSVToXmlOrchard.pdb" />
-    <Content Include="Database\XmlDatabase.xml" />
+    <Content Include="bin\Debug\Database\XmlDatabase.xml" />
+    <Content Include="Database\XmlDatabase.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
