@@ -1,3 +1,7 @@
-ConvertCSVToXmlOrchard/bin/
-ConvertCSVToXmlOrchard/obj/
-.vs
+ConvertCSVToXmlOrchard/bin/*
+ConvertCSVToXmlOrchard/obj/*
+ConvertCSVToXmlOrchard/.vs/*
+**/suo
+*.exe
+*.pdb
+*.xml
