@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using CsvHelper;
-using System.Diagnostics;
+
 
 namespace ConvertCSVToXmlOrchard
 {
@@ -16,6 +16,7 @@ namespace ConvertCSVToXmlOrchard
     public class CsvToXml
     {
         //private static int index = 1;
+
         private static List<string> listOfValueFromDatabase = new List<string>();
 
         public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
@@ -36,7 +37,7 @@ namespace ConvertCSVToXmlOrchard
             var xContent = new XElement("Content"); //Create the Content -->  <Content>
 
             // load previous data from database
-            LoadFromDataBase();
+            LoadFromDataBase(dirName);
 
             for (int i = 0; i < dataContents.Count; i++)
             {
@@ -58,10 +59,38 @@ namespace ConvertCSVToXmlOrchard
             // save all content in format 'importid={id},identity={identity}'
         }
 
-        private static void LoadFromDataBase()
+        private static void LoadFromDataBase(string Filename)
         {
             //listOfValueFromDatabase
             // listOfValueFromDatabase[i] is "importid=0001,identity=as932344"
+            // check from database
+            string checkdata = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
+            if (File.Exists(checkdata))
+            {
+                var modified = XElement.Load(checkdata);
+                var oldxml = modified.Descendants("Content").Elements(Filename);
+
+                foreach (var item in oldxml)
+                {
+                    listOfValueFromDatabase.Add(item.ToString());
+
+                    var itemx = oldxml.FirstOrDefault(x => x.Element("TextField.Importid").Attribute("Text").Value == item.Element("TextField.Importid").Attribute("Text").Value);
+
+                    if (item != null)
+                    {
+                        item.Element("TextField.Importid").Attribute("Text").Value = item.Element("TextField.Importid").Attribute("Text").Value;
+                    }
+                    else
+                    {
+                        item.Element("TextField.Importid").Attribute("Text").Value = item.Element("TextField.Importid").Attribute("Text").Value;
+                    }
+                }
+                modified.Save(checkdata);
+            }
+            else
+            {
+
+            }
         }
 
         private static XElement Reciperow()
@@ -104,60 +133,6 @@ namespace ConvertCSVToXmlOrchard
             string id = Guid.NewGuid().ToString().Replace("-", "");
 
             // check from database
-            string checkdata = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
-
-            if (File.Exists(checkdata))
-            {
-                //var modified = XElement.Load(checkdata);
-                //var newxml = Descendants("Orchard").Descendants("Content").Elements("attendees");
-                //var oldxml = modified.Element("Content").Element("attendees");
-
-                //foreach (var item in newxml)
-                //{
-                //    var itemx = oldxml.(x => x.Element("TextField.Firstname").Attribute("Text").Value == item.Element("TextField.Firstname")
-                //    .Attribute("Text").Value && x.Element("TextField.Lastname").Attribute("Text").Value == item.Element("TextField.Lastname")
-                //    .Attribute("Text").Value && x.Element("TextField.Companyname").Attribute("Text").Value == item.Element("TextField.Companyname")
-                //    .Attribute("Text").Value && x.Element("TextField.Email").Attribute("Text").Value == item.Element("TextField.Email")
-                //    .Attribute("Text").Value && x.Element("TextField.Phone").Attribute("Text").Value == item.Element("TextField.Phone")
-                //    .Attribute("Text").Value);
-
-                //    if (itemx != null)
-                //    {
-                //        item.Element("TextField.Firstname").Attribute("Text").Value = itemx.Element("TextField.Firstname").Attribute("Text").Value;
-                //        item.Element("TextField.Lastname").Attribute("Text").Value = itemx.Element("TextField.Lastname").Attribute("Text").Value;
-                //        item.Element("TextField.Companyname").Attribute("Text").Value = itemx.Element("TextField.Companyname").Attribute("Text").Value;
-                //        item.Element("TextField.Title").Attribute("Text").Value = itemx.Element("TextField.Title").Attribute("Text").Value;
-                //        item.Element("TextField.Mailcity").Attribute("Text").Value = itemx.Element("TextField.Mailcity").Attribute("Text").Value;
-                //        item.Element("TextField.Mailstate").Attribute("Text").Value = itemx.Element("TextField.Mailstate").Attribute("Text").Value;
-                //        item.Element("TextField.Phone").Attribute("Text").Value = itemx.Element("TextField.Phone").Attribute("Text").Value;
-                //        item.Element("TextField.Email").Attribute("Text").Value = itemx.Element("TextField.Email").Attribute("Text").Value;
-                //        item.Element("TextField.Webpage").Attribute("Text").Value = itemx.Element("TextField.Webpage").Attribute("Text").Value;
-                //        item.Element("TextField.Importid").Attribute("Text").Value = itemx.Element("TextField.Importid").Attribute("Text").Value;
-                //        item.Element("TextField.Spouse").Attribute("Text").Value = itemx.Element("TextField.Spouse").Attribute("Text").Value;
-                //        item.Element("TextField.Guest").Attribute("Text").Value = itemx.Element("TextField.Guest").Attribute("Text").Value;
-                //        item.Element("TextField.First-time").Attribute("Text").Value = itemx.Element("TextField.First-time").Attribute("Text").Value;
-
-                //    }
-                //    else
-                //    {
-                //        item.Element("TextField.Firstname").Attribute("Text").Value = item.Element("TextField.Firstname").Attribute("Text").Value;
-                //        item.Element("TextField.Lastname").Attribute("Text").Value = item.Element("TextField.Lastname").Attribute("Text").Value;
-                //        item.Element("TextField.Companyname").Attribute("Text").Value = item.Element("TextField.Companyname").Attribute("Text").Value;
-                //        item.Element("TextField.Title").Attribute("Text").Value = item.Element("TextField.Title").Attribute("Text").Value;
-                //        item.Element("TextField.Mailcity").Attribute("Text").Value = item.Element("TextField.Mailcity").Attribute("Text").Value;
-                //        item.Element("TextField.Mailstate").Attribute("Text").Value = item.Element("TextField.Mailstate").Attribute("Text").Value;
-                //        item.Element("TextField.Phone").Attribute("Text").Value = item.Element("TextField.Phone").Attribute("Text").Value;
-                //        item.Element("TextField.Email").Attribute("Text").Value = item.Element("TextField.Email").Attribute("Text").Value;
-                //        item.Element("TextField.Webpage").Attribute("Text").Value = item.Element("TextField.Webpage").Attribute("Text").Value;
-                //        item.Element("TextField.Importid").Attribute("Text").Value = item.Element("TextField.Importid").Attribute("Text").Value;
-                //        item.Element("TextField.Spouse").Attribute("Text").Value = item.Element("TextField.Spouse").Attribute("Text").Value;
-                //        item.Element("TextField.Guest").Attribute("Text").Value = item.Element("TextField.Guest").Attribute("Text").Value;
-                //        item.Element("TextField.First-time").Attribute("Text").Value = item.Element("TextField.First-time").Attribute("Text").Value;
-
-                //    }
-                //}
-            }
-
             // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
             // if import id not equal 0001 in any rows from database then generate a new one.
 
@@ -189,11 +164,6 @@ namespace ConvertCSVToXmlOrchard
                 xrow.Add(xvar);
             }
             return xrow;
-        }
-
-        private bool ProcessExists(int id)
-        {
-            return Process.GetProcesses().Any(x => x.Id == id);
         }
 
         private static object Descendants(string v)
