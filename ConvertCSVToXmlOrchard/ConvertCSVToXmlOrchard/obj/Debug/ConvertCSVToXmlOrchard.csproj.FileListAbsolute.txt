@@ -26,3 +26,13 @@ D:\salween\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToX
 D:\salween\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.Properties.Resources.resources
 D:\salween\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.csproj.GenerateResource.Cache
 C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\bin\Debug\ConvertCSVToXmlOrchard.exe.config
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\bin\Debug\ConvertCSVToXmlOrchard.exe
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\bin\Debug\ConvertCSVToXmlOrchard.pdb
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\bin\Debug\CsvHelper.dll
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\bin\Debug\CsvHelper.xml
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.csprojResolveAssemblyReference.cache
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.Form1.resources
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.Properties.Resources.resources
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.csproj.GenerateResource.Cache
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.exe
+C:\Users\MY-PC\Documents\ToolsConvert\ConvertCSVToXmlOrchard\ConvertCSVToXmlOrchard\obj\Debug\ConvertCSVToXmlOrchard.pdb

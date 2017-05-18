@@ -14,15 +14,15 @@ namespace ConvertCSVToXmlOrchard
 {
 
     public class CsvToXml
-    {
-        //private static int index = 1;
-
+    {       
         private static List<string> listOfValueFromDatabase = new List<string>();
 
-        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
-        {
-            //index = 1;
+        private static List<databasemodel> listOfIdFromDatabase = new List<databasemodel>();
 
+        private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
+
+        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
+        {            
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
 
             //Create the element
@@ -64,32 +64,16 @@ namespace ConvertCSVToXmlOrchard
             //listOfValueFromDatabase
             // listOfValueFromDatabase[i] is "importid=0001,identity=as932344"
             // check from database
-            string checkdata = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
-            if (File.Exists(checkdata))
+           
+            if (File.Exists(databasepath))
             {
-                var modified = XElement.Load(checkdata);
-                var oldxml = modified.Descendants("Content").Elements(Filename);
+                var loaddatabasexml = XElement.Load(databasepath);
 
-                foreach (var item in oldxml)
-                {
-                    listOfValueFromDatabase.Add(item.ToString());
-
-                    var itemx = oldxml.FirstOrDefault(x => x.Element("TextField.Importid").Attribute("Text").Value == item.Element("TextField.Importid").Attribute("Text").Value);
-
-                    if (item != null)
-                    {
-                        item.Element("TextField.Importid").Attribute("Text").Value = item.Element("TextField.Importid").Attribute("Text").Value;
-                    }
-                    else
-                    {
-                        item.Element("TextField.Importid").Attribute("Text").Value = item.Element("TextField.Importid").Attribute("Text").Value;
-                    }
-                }
-                modified.Save(checkdata);
-            }
-            else
-            {
-
+                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements(Filename)
+                               select new
+                               {                                  
+                                   ImportId = s.Element("TextField.Importid").Attribute("Text").Value
+                               });                           
             }
         }
 
@@ -133,20 +117,21 @@ namespace ConvertCSVToXmlOrchard
             string id = Guid.NewGuid().ToString().Replace("-", "");
 
             // check from database
+            var chechId = listOfIdFromDatabase.FirstOrDefault();
+            
+            
             // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
             // if import id not equal 0001 in any rows from database then generate a new one.
 
             var xrow = new XElement(FileName, new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
 
-            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
-
-            //XElement ImportID = new XElement("ImportID", new XAttribute("Text", index));
+            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));           
 
             var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
 
             xrow.Add(Identifier, commonP);
 
-            //index = index + 1;
+            
 
             string[] keys = columns.Keys.ToArray();
             // looping for each column in data dic
@@ -154,6 +139,7 @@ namespace ConvertCSVToXmlOrchard
             {
                 string key = keys[i]; // get current key at curent index (i)
                 string value = columns[key]; // get current value that pointing to current key
+
                 // if key = importid then check to database
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
@@ -197,6 +183,12 @@ namespace ConvertCSVToXmlOrchard
                 items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
             }
             return items;
+        }
+
+        public class databasemodel
+        {
+            public string ImportId { get; set; }
+            public string Iddentity { get; set; }
         }
     }
 }
