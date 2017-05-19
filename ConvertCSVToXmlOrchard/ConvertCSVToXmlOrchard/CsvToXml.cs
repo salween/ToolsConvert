@@ -64,16 +64,25 @@ namespace ConvertCSVToXmlOrchard
             //listOfValueFromDatabase
             // listOfValueFromDatabase[i] is "importid=0001,identity=as932344"
             // check from database
-           
+
             if (File.Exists(databasepath))
             {
                 var loaddatabasexml = XElement.Load(databasepath);
-
                 var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements(Filename)
                                select new
-                               {                                  
+                               {
+                                   Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
                                    ImportId = s.Element("TextField.Importid").Attribute("Text").Value
-                               });                           
+                               }).ToList();
+
+                foreach (var id in loaddata)
+                {
+                    databasemodel obj = new databasemodel();
+                    obj.ImportId = id.ImportId;
+                    obj.Iddentity = id.Iddentity;
+                    listOfIdFromDatabase.Add(obj);
+                }
+
             }
         }
 
@@ -114,12 +123,21 @@ namespace ConvertCSVToXmlOrchard
 
         private static XElement Content(Dictionary<string, string> columns, string FileName)
         {
-            string id = Guid.NewGuid().ToString().Replace("-", "");
+            //string id = Guid.NewGuid().ToString().Replace("-", "");
+            string id = string.Empty;
 
             // check from database
-            var chechId = listOfIdFromDatabase.FirstOrDefault();
-            
-            
+            var checkId = listOfIdFromDatabase.FirstOrDefault(x => x.ImportId == columns["Import id"]);
+
+            if (checkId != null)
+            {
+                id = checkId.ImportId;
+            }
+            else
+            {
+                id = Guid.NewGuid().ToString().Replace("-", "");
+            }
+          
             // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
             // if import id not equal 0001 in any rows from database then generate a new one.
 

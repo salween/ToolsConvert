@@ -61,13 +61,13 @@ namespace ConvertCSVToXmlOrchard
                     DialogResult dr = saveFileDialog1.ShowDialog();
                     if (dr == DialogResult.OK)
                     {
-                        string filename = saveFileDialog1.FileName;//***
-                        doc.Save(filename);//***
+                        string filename = saveFileDialog1.FileName;
+                        doc.Save(filename);
 
                         string checkdata = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
                         doc.Save(checkdata);
 
-                        MessageBox.Show("Save File Success");//****                       
+                        MessageBox.Show("Save File Success");                      
                     }
 
                 }
