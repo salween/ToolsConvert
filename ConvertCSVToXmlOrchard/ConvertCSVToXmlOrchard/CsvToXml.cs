@@ -17,7 +17,7 @@ namespace ConvertCSVToXmlOrchard
     {       
         private static List<string> listOfValueFromDatabase = new List<string>();
 
-        private static List<databasemodel> listOfIdFromDatabase = new List<databasemodel>();
+        private static List<CSVModel> listOfIdFromDatabase = new List<CSVModel>();
 
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
 
@@ -56,6 +56,7 @@ namespace ConvertCSVToXmlOrchard
         private static void SaveToDataBase(XElement content)
         {
             //listOfValueFromDatabase to database
+           
             // save all content in format 'importid={id},identity={identity}'
         }
 
@@ -72,14 +73,42 @@ namespace ConvertCSVToXmlOrchard
                                select new
                                {
                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
-                                   ImportId = s.Element("TextField.Importid").Attribute("Text").Value
+                                   ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
+                                   Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
+                                   Lastname = s.Element("TextField.Lastname").Attribute("Text").Value,
+                                   Companyname = s.Element("TextField.Companyname").Attribute("Text").Value,
+                                   Title = s.Element("TextField.Title").Attribute("Text").Value,
+                                   Mailcity = s.Element("TextField.Mailcity").Attribute("Text").Value,
+                                   Mailstate = s.Element("TextField.Mailstate").Attribute("Text").Value,
+                                   Phone = s.Element("TextField.Phone").Attribute("Text").Value,
+                                   Email = s.Element("TextField.Email").Attribute("Text").Value,
+                                   Webpage = s.Element("TextField.Webpage").Attribute("Text").Value,
+                                   Importid = s.Element("TextField.Importid").Attribute("Text").Value,
+                                   Spouse = s.Element("TextField.Spouse").Attribute("Text").Value,
+                                   Guest = s.Element("TextField.Guest").Attribute("Text").Value,
+                                   Firsttime = s.Element("TextField.First-time").Attribute("Text").Value
+
                                }).ToList();
 
                 foreach (var id in loaddata)
                 {
-                    databasemodel obj = new databasemodel();
+                    CSVModel obj = new CSVModel();
                     obj.ImportId = id.ImportId;
                     obj.Iddentity = id.Iddentity;
+                    obj.Firstname = id.Firstname;
+                    obj.Lastname = id.Lastname;
+                    obj.Companyname = id.Companyname;
+                    obj.Title = id.Title;
+                    obj.Mailcity = id.Mailcity;
+                    obj.Mailstate = id.Mailstate;
+                    obj.Phone = id.Phone;
+                    obj.Email = id.Email;
+                    obj.Webpage = id.Webpage;
+                    obj.ImportId = id.ImportId;
+                    obj.Spouse = id.Spouse;
+                    obj.Guest = id.Guest;
+                    obj.Firsttime = id.Firsttime;
+
                     listOfIdFromDatabase.Add(obj);
                 }
 
@@ -127,20 +156,20 @@ namespace ConvertCSVToXmlOrchard
             string id = string.Empty;
 
             // check from database
+            // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
+            // if import id not equal 0001 in any rows from database then generate a new one.
+
             var checkId = listOfIdFromDatabase.FirstOrDefault(x => x.ImportId == columns["Import id"]);
 
             if (checkId != null)
             {
-                id = checkId.ImportId;
+                id = checkId.Iddentity;
             }
             else
             {
                 id = Guid.NewGuid().ToString().Replace("-", "");
             }
-          
-            // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
-            // if import id not equal 0001 in any rows from database then generate a new one.
-
+                   
             var xrow = new XElement(FileName, new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
 
             XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));           
@@ -161,6 +190,11 @@ namespace ConvertCSVToXmlOrchard
                 // if key = importid then check to database
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
+
+                //if(key == "Firstname")
+                //{
+                //    (!value.Equals())
+                //}
 
                 //Create the element var and Attributes with the field name and value
                 var xvar = new XElement($"TextField.{ ToOrchardFieldName(key.ToLower())}",

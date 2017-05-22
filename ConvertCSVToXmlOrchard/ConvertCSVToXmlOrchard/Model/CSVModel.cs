@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ConvertCSVToXmlOrchard
 {
-    class CSVModel
+    public class CSVModel
     {
         //Should have properties which correspond to the Column Names in the file
 
-        //public int Id { get; set; }
+        public string Iddentity { get; set; }
 
-        public string Firstvname { get; set; }
+        public string Firstname { get; set; }
 
         public string Lastname { get; set; }
 
@@ -30,7 +30,7 @@ namespace ConvertCSVToXmlOrchard
 
         public string Webpage { get; set; }
 
-        public string Importid { get; set; }
+        public string ImportId { get; set; }
 
         public string Spouse { get; set; }
 
