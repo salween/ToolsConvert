@@ -15,8 +15,7 @@ namespace ConvertCSVToXmlOrchard
 
     public class CsvToXml
     {       
-        private static List<string> listOfValueFromDatabase = new List<string>();
-
+       
         private static List<CSVModel> listOfIdFromDatabase = new List<CSVModel>();
 
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
@@ -190,12 +189,28 @@ namespace ConvertCSVToXmlOrchard
                 // if key = importid then check to database
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
-
-                //if(key == "Firstname")
-                //{
-                //    (!value.Equals())
-                //}
-
+              
+                if (key == "Firstname") 
+                {
+                    if (!value.Equals(checkId.Firstname)) 
+                    {                                       
+                        checkId.Firstname = value;          
+                    }
+                }
+                else if (key == "Lastname")
+                {
+                    if (!value.Equals(checkId.Lastname))
+                    {
+                        checkId.Lastname = value;
+                    }
+                }
+                else if (key == "Companyname")
+                {
+                    if (!value.Equals(checkId.Companyname))
+                    {
+                        checkId.Companyname = value;
+                    }
+                }
                 //Create the element var and Attributes with the field name and value
                 var xvar = new XElement($"TextField.{ ToOrchardFieldName(key.ToLower())}",
                                         new XAttribute("Text", value));
