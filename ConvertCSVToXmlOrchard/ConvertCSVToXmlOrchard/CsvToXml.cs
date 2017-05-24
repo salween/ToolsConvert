@@ -147,7 +147,7 @@ namespace ConvertCSVToXmlOrchard
             return xTypes;
         }
 
-
+        
 
         private static XElement Content(Dictionary<string, string> columns, string FileName)
         {
@@ -190,25 +190,89 @@ namespace ConvertCSVToXmlOrchard
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
               
-                if (key == "Firstname") 
+                if (ToOrchardFieldName(key.ToLower()) == "Firstname") 
                 {
                     if (!value.Equals(checkId.Firstname)) 
                     {                                       
                         checkId.Firstname = value;          
                     }
                 }
-                else if (key == "Lastname")
+                else if (ToOrchardFieldName(key.ToLower()) == "Lastname")
                 {
                     if (!value.Equals(checkId.Lastname))
                     {
                         checkId.Lastname = value;
                     }
                 }
-                else if (key == "Companyname")
+                else if (ToOrchardFieldName(key.ToLower()) == "Companyname")
                 {
                     if (!value.Equals(checkId.Companyname))
                     {
                         checkId.Companyname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Title")
+                {
+                    if(!value.Equals(checkId.Title))
+                    {
+                        checkId.Title = value;
+                    }
+                }
+               else if (ToOrchardFieldName(key.ToLower()) == "Mailcity")
+                {
+                    if(!value.Equals(checkId.Mailcity))
+                    {
+                        checkId.Mailcity = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Mailstate")
+                {
+                    if(!value.Equals(checkId.Mailstate))
+                    {
+                        checkId.Mailstate = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Phone")
+                {
+                    if(!value.Equals(checkId.Phone))
+                    {
+                        checkId.Phone = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Email")
+                {
+                    if(!value.Equals(checkId.Email))
+                    {
+                        checkId.Email = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Webpage")
+                {
+                    if(!value.Equals(checkId.Webpage))
+                    {
+                        checkId.Webpage = value;
+
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Spouse")
+                {
+                    if(!value.Equals(checkId.Spouse))
+                    {
+                        checkId.Spouse = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Guest")
+                {
+                    if(!value.Equals(checkId.Guest))
+                    {
+                        checkId.Guest = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "First-time")
+                {
+                    if(!value.Equals(checkId.Firsttime))
+                    {
+                        checkId.Firsttime = value;
                     }
                 }
                 //Create the element var and Attributes with the field name and value
