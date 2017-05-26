@@ -14,8 +14,9 @@ namespace ConvertCSVToXmlOrchard
 {
 
     public class CsvToXml
-    {       
-       
+    {
+        private static List<string> listOfValueFromDatabase = new List<string>();
+
         private static List<CSVModel> listOfIdFromDatabase = new List<CSVModel>();
 
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
@@ -45,17 +46,33 @@ namespace ConvertCSVToXmlOrchard
 
             xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
             xHead.Add(Reciperow(), xContentDe, xContent);
+            xsyntax.Add(comm, xHead);
+
             // save import id and identity 
             SaveToDataBase(xContent);
-            //
-            xsyntax.Add(comm, xHead);
+            listOfValueFromDatabase.Add(xsyntax.ToString());
+            
             return xsyntax;
         }
 
         private static void SaveToDataBase(XElement content)
         {
             //listOfValueFromDatabase to database
-           
+            if (File.Exists(databasepath))
+            {
+                XDocument ValueFromDatabase = XDocument.Load(databasepath);
+                var loaddata = ValueFromDatabase.Descendants("Content");
+                loaddata.Remove();
+                if (loaddata == null)
+                {
+
+                }
+
+            }
+            else
+            {
+               
+            }
             // save all content in format 'importid={id},identity={identity}'
         }
 
@@ -68,7 +85,7 @@ namespace ConvertCSVToXmlOrchard
             if (File.Exists(databasepath))
             {
                 var loaddatabasexml = XElement.Load(databasepath);
-                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements(Filename)
+                var loaddata = (from s in loaddatabasexml.Descendants("Content")
                                select new
                                {
                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
