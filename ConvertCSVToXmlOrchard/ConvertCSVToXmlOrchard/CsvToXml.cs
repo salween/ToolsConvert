@@ -14,7 +14,7 @@ namespace ConvertCSVToXmlOrchard
 {
 
     public class CsvToXml
-    {       
+    {
         private static List<string> listOfValueFromDatabase = new List<string>();
 
         private static List<CSVModel> listOfIdFromDatabase = new List<CSVModel>();
@@ -46,17 +46,33 @@ namespace ConvertCSVToXmlOrchard
 
             xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
             xHead.Add(Reciperow(), xContentDe, xContent);
+            xsyntax.Add(comm, xHead);
+
             // save import id and identity 
             SaveToDataBase(xContent);
-            //
-            xsyntax.Add(comm, xHead);
+            listOfValueFromDatabase.Add(xsyntax.ToString());
+            
             return xsyntax;
         }
 
         private static void SaveToDataBase(XElement content)
         {
             //listOfValueFromDatabase to database
-           
+            if (File.Exists(databasepath))
+            {
+                XDocument ValueFromDatabase = XDocument.Load(databasepath);
+                var loaddata = ValueFromDatabase.Descendants("Content");
+                loaddata.Remove();
+                if (loaddata == null)
+                {
+
+                }
+
+            }
+            else
+            {
+               
+            }
             // save all content in format 'importid={id},identity={identity}'
         }
 
@@ -69,7 +85,7 @@ namespace ConvertCSVToXmlOrchard
             if (File.Exists(databasepath))
             {
                 var loaddatabasexml = XElement.Load(databasepath);
-                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements(Filename)
+                var loaddata = (from s in loaddatabasexml.Descendants("Content")
                                select new
                                {
                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
@@ -148,7 +164,7 @@ namespace ConvertCSVToXmlOrchard
             return xTypes;
         }
 
-
+        
 
         private static XElement Content(Dictionary<string, string> columns, string FileName)
         {
@@ -190,12 +206,92 @@ namespace ConvertCSVToXmlOrchard
                 // if key = importid then check to database
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
+              
+                if (ToOrchardFieldName(key.ToLower()) == "Firstname") 
+                {
+                    if (!value.Equals(checkId.Firstname)) 
+                    {                                       
+                        checkId.Firstname = value;          
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Lastname")
+                {
+                    if (!value.Equals(checkId.Lastname))
+                    {
+                        checkId.Lastname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Companyname")
+                {
+                    if (!value.Equals(checkId.Companyname))
+                    {
+                        checkId.Companyname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Title")
+                {
+                    if(!value.Equals(checkId.Title))
+                    {
+                        checkId.Title = value;
+                    }
+                }
+               else if (ToOrchardFieldName(key.ToLower()) == "Mailcity")
+                {
+                    if(!value.Equals(checkId.Mailcity))
+                    {
+                        checkId.Mailcity = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Mailstate")
+                {
+                    if(!value.Equals(checkId.Mailstate))
+                    {
+                        checkId.Mailstate = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Phone")
+                {
+                    if(!value.Equals(checkId.Phone))
+                    {
+                        checkId.Phone = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Email")
+                {
+                    if(!value.Equals(checkId.Email))
+                    {
+                        checkId.Email = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Webpage")
+                {
+                    if(!value.Equals(checkId.Webpage))
+                    {
+                        checkId.Webpage = value;
 
-                //if(key == "Firstname")
-                //{
-                //    (!value.Equals())
-                //}
-
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Spouse")
+                {
+                    if(!value.Equals(checkId.Spouse))
+                    {
+                        checkId.Spouse = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Guest")
+                {
+                    if(!value.Equals(checkId.Guest))
+                    {
+                        checkId.Guest = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "First-time")
+                {
+                    if(!value.Equals(checkId.Firsttime))
+                    {
+                        checkId.Firsttime = value;
+                    }
+                }
                 //Create the element var and Attributes with the field name and value
                 var xvar = new XElement($"TextField.{ ToOrchardFieldName(key.ToLower())}",
                                         new XAttribute("Text", value));
