@@ -72,6 +72,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="bin\Debug\ConvertCSVToXmlOrchard.exe.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -86,8 +87,13 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\ConvertCSVToXmlOrchard.exe" />
+    <Content Include="bin\Debug\ConvertCSVToXmlOrchard.pdb" />
+    <Content Include="bin\Debug\Database\XmlDatabase.xml" />
     <Content Include="Database\XmlDatabase.xml">
       <SubType>Designer</SubType>
     </Content>
