@@ -24,7 +24,7 @@ namespace ConvertXmlToCsv
         {
             OpenFileDialog fdlg = new OpenFileDialog();
             fdlg.Title = "Open File XML";
-            fdlg.InitialDirectory = @"c:\";
+            //fdlg.InitialDirectory = @"c:\";
             fdlg.DefaultExt = "xml";
             fdlg.Filter = "XML files (*.xml)|*.xml";
             fdlg.FilterIndex = 1;
@@ -89,6 +89,12 @@ namespace ConvertXmlToCsv
             }
 
         }
+
+        //public static List<Dictionary<string, string>>WritingInCSV(string absolutePath)
+        //{
+
+        //    return (null);
+        //}
 
         private void button1_Click(object sender, EventArgs e)
         {
