@@ -28,10 +28,10 @@ namespace ConvertCSVToXmlOrchard
             using (OpenFileDialog openfile = new OpenFileDialog())
             {
                 openfile.Title = "Open File CSV";
-                openfile.InitialDirectory = @"c:\";
+                //openfile.InitialDirectory = @"c:\";
                 openfile.DefaultExt = "csv";
                 openfile.Filter = "CSV files (*.csv)|*.csv";
-                openfile.FilterIndex = 2;
+                openfile.FilterIndex = 1;
                 openfile.RestoreDirectory = true;
                 if (openfile.ShowDialog() == DialogResult.OK)
                 {

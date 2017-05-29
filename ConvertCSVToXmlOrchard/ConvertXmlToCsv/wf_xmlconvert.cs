@@ -24,7 +24,7 @@ namespace ConvertXmlToCsv
         {
             OpenFileDialog fdlg = new OpenFileDialog();
             fdlg.Title = "Open File XML";
-            fdlg.InitialDirectory = @"c:\";
+            //fdlg.InitialDirectory = @"c:\";
             fdlg.DefaultExt = "xml";
             fdlg.Filter = "XML files (*.xml)|*.xml";
             fdlg.FilterIndex = 1;

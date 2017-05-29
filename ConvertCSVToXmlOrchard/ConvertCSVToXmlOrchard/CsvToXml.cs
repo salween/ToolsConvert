@@ -37,7 +37,7 @@ namespace ConvertCSVToXmlOrchard
             var xContent = new XElement("Content"); //Create the Content -->  <Content>
 
             // load previous data from database
-            LoadFromDataBase(dirName);
+            LoadFromDataBase();
 
             for (int i = 0; i < dataContents.Count; i++)
             {
@@ -49,8 +49,9 @@ namespace ConvertCSVToXmlOrchard
             xsyntax.Add(comm, xHead);
 
             // save import id and identity 
-            SaveToDataBase(xContent);
             listOfValueFromDatabase.Add(xsyntax.ToString());
+            SaveToDataBase(xContent);
+            
             
             return xsyntax;
         }
@@ -59,24 +60,30 @@ namespace ConvertCSVToXmlOrchard
         {
             //listOfValueFromDatabase to database
             if (File.Exists(databasepath))
-            {
-                XDocument ValueFromDatabase = XDocument.Load(databasepath);
-                var loaddata = ValueFromDatabase.Descendants("Content");
+            {                                                               
+                XElement ValueFromDatabase = XElement.Load(databasepath); 
+                var loaddata = ValueFromDatabase.Descendants("Content"); 
                 loaddata.Remove();
-                if (loaddata == null)
+                if (loaddata.Any()) // ถ้า มีข้อมูล เข้า if
                 {
 
+                }
+                else // ไม่มีข้อมูลเข้า eles คือ ลบ เรียบร้อยแล้ว
+                {
+                    ValueFromDatabase.Add(content); //แอดคอนเทน
+                    ValueFromDatabase.Save(databasepath);
                 }
 
             }
             else
             {
-               
+                var ValueFromDatabase = XElement.Load(listOfValueFromDatabase[0]); //
+                ValueFromDatabase.Save(databasepath);
             }
             // save all content in format 'importid={id},identity={identity}'
         }
 
-        private static void LoadFromDataBase(string Filename)
+        private static void LoadFromDataBase()
         {
             //listOfValueFromDatabase
             // listOfValueFromDatabase[i] is "importid=0001,identity=as932344"
@@ -85,8 +92,8 @@ namespace ConvertCSVToXmlOrchard
             if (File.Exists(databasepath))
             {
                 var loaddatabasexml = XElement.Load(databasepath);
-                var loaddata = (from s in loaddatabasexml.Descendants("Content")
-                               select new
+                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements()
+                                select new
                                {
                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
                                    ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
