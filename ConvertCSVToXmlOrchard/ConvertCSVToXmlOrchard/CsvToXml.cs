@@ -14,7 +14,7 @@ namespace ConvertCSVToXmlOrchard
 {
 
     public class CsvToXml
-    {       
+    {
         private static List<string> listOfValueFromDatabase = new List<string>();
 
         private static List<CSVModel> listOfIdFromDatabase = new List<CSVModel>();
@@ -22,7 +22,7 @@ namespace ConvertCSVToXmlOrchard
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
 
         public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
-        {            
+        {
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
 
             //Create the element
@@ -37,7 +37,7 @@ namespace ConvertCSVToXmlOrchard
             var xContent = new XElement("Content"); //Create the Content -->  <Content>
 
             // load previous data from database
-            LoadFromDataBase(dirName);
+            LoadFromDataBase();
 
             for (int i = 0; i < dataContents.Count; i++)
             {
@@ -46,21 +46,44 @@ namespace ConvertCSVToXmlOrchard
 
             xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
             xHead.Add(Reciperow(), xContentDe, xContent);
-            // save import id and identity 
-            SaveToDataBase(xContent);
-            //
             xsyntax.Add(comm, xHead);
+
+            // save import id and identity 
+            listOfValueFromDatabase.Add(xsyntax.ToString());
+            SaveToDataBase(xContent);
+
+
             return xsyntax;
         }
 
         private static void SaveToDataBase(XElement content)
         {
             //listOfValueFromDatabase to database
-           
+            if (File.Exists(databasepath))
+            {
+                XElement ValueFromDatabase = XElement.Load(databasepath);
+                var loaddata = ValueFromDatabase.Descendants("Content");
+                loaddata.Remove();
+                if (loaddata.Any()) 
+                {
+
+                }
+                else 
+                {
+                    ValueFromDatabase.Add(content); 
+                    ValueFromDatabase.Save(databasepath);
+                }
+
+            }
+            else
+            {
+                var ValueFromDatabase = XElement.Load(listOfValueFromDatabase[0]); 
+                ValueFromDatabase.Save(databasepath);
+            }
             // save all content in format 'importid={id},identity={identity}'
         }
 
-        private static void LoadFromDataBase(string Filename)
+        private static void LoadFromDataBase()
         {
             //listOfValueFromDatabase
             // listOfValueFromDatabase[i] is "importid=0001,identity=as932344"
@@ -69,9 +92,9 @@ namespace ConvertCSVToXmlOrchard
             if (File.Exists(databasepath))
             {
                 var loaddatabasexml = XElement.Load(databasepath);
-                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements(Filename)
+                var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements()
                                select new
-                               {
+                {
                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
                                    ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
                                    Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
@@ -83,11 +106,9 @@ namespace ConvertCSVToXmlOrchard
                                    Phone = s.Element("TextField.Phone").Attribute("Text").Value,
                                    Email = s.Element("TextField.Email").Attribute("Text").Value,
                                    Webpage = s.Element("TextField.Webpage").Attribute("Text").Value,
-                                   Importid = s.Element("TextField.Importid").Attribute("Text").Value,
                                    Spouse = s.Element("TextField.Spouse").Attribute("Text").Value,
                                    Guest = s.Element("TextField.Guest").Attribute("Text").Value,
-                                   Firsttime = s.Element("TextField.First-time").Attribute("Text").Value
-
+                                   Firsttime = s.Element("TextField.Firsttime").Attribute("Text").Value
                                }).ToList();
 
                 foreach (var id in loaddata)
@@ -169,16 +190,16 @@ namespace ConvertCSVToXmlOrchard
             {
                 id = Guid.NewGuid().ToString().Replace("-", "");
             }
-                   
+
             var xrow = new XElement(FileName, new XAttribute("Id", $"/Identifier={id}"), new XAttribute("Status", "Published"));
 
-            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));           
+            XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
 
             var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
 
             xrow.Add(Identifier, commonP);
 
-            
+
 
             string[] keys = columns.Keys.ToArray();
             // looping for each column in data dic
@@ -191,11 +212,91 @@ namespace ConvertCSVToXmlOrchard
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
 
-                //if(key == "Firstname")
-                //{
-                //    (!value.Equals())
-                //}
+                if (ToOrchardFieldName(key.ToLower()) == "Firstname")
+                {
+                    if (!value.Equals(checkId.Firstname))
+                    {
+                        checkId.Firstname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Lastname")
+                {
+                    if (!value.Equals(checkId.Lastname))
+                    {
+                        checkId.Lastname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Companyname")
+                {
+                    if (!value.Equals(checkId.Companyname))
+                    {
+                        checkId.Companyname = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Title")
+                {
+                    if (!value.Equals(checkId.Title))
+                    {
+                        checkId.Title = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Mailcity")
+                {
+                    if (!value.Equals(checkId.Mailcity))
+                    {
+                        checkId.Mailcity = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Mailstate")
+                {
+                    if (!value.Equals(checkId.Mailstate))
+                    {
+                        checkId.Mailstate = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Phone")
+                {
+                    if (!value.Equals(checkId.Phone))
+                    {
+                        checkId.Phone = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Email")
+                {
+                    if (!value.Equals(checkId.Email))
+                    {
+                        checkId.Email = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Webpage")
+                {
+                    if (!value.Equals(checkId.Webpage))
+                    {
+                        checkId.Webpage = value;
 
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Spouse")
+                {
+                    if (!value.Equals(checkId.Spouse))
+                    {
+                        checkId.Spouse = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "Guest")
+                {
+                    if (!value.Equals(checkId.Guest))
+                    {
+                        checkId.Guest = value;
+                    }
+                }
+                else if (ToOrchardFieldName(key.ToLower()) == "First-time")
+                {
+                    if (!value.Equals(checkId.Firsttime))
+                    {
+                        checkId.Firsttime = value;
+                    }
+                }
                 //Create the element var and Attributes with the field name and value
                 var xvar = new XElement($"TextField.{ ToOrchardFieldName(key.ToLower())}",
                                         new XAttribute("Text", value));
@@ -216,7 +317,7 @@ namespace ConvertCSVToXmlOrchard
                 throw new ArgumentNullException("Your input is null or empty.");
             }
 
-            string noWhiteSpace = input.Replace(" ", string.Empty);
+            string noWhiteSpace = input.Replace(" ", string.Empty).Replace("-", "");
             string firstUpperCharacter = noWhiteSpace[0].ToString().ToUpper() + noWhiteSpace.Substring(1);
 
             return firstUpperCharacter;
