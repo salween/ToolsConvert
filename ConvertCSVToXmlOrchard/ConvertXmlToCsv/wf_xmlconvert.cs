@@ -35,10 +35,16 @@ namespace ConvertXmlToCsv
             }
         }
 
+        private static bool ContainsText(string name)
+        {
+            return name.Contains("TextField.");
+        }
+
         private void save()
         {
             if (textBox1.Text != "")
             {
+
                 StreamReader wr = new StreamReader(textBox1.Text, true);
                 string fs = wr.ReadToEnd();
 
@@ -51,18 +57,29 @@ namespace ConvertXmlToCsv
                     xd =>
                         xd
                             .Descendants("Content")
-                            .Descendants("attendees")
+                            .Elements()
                             .SelectMany(d => d.Elements())
                             .Select(e => e.Name.ToString())
                             .Distinct();
 
-                var headers =
-                    String.Join(",",
-                        getFields(xml)
-                            .Select(f => csvFormat(f)));
+                var headers = String.Join(",", getFields(xml).Select(f => csvFormat(f)));
+
+                var header = "";
+                List<string> name = new List<string>();
+                foreach (var head in headers.Split(','))
+                {
+                    if (ContainsText(head))
+                    {
+                        name.Add(head);
+
+                    }
+                }
+
+                header = String.Join(",", name);
+
 
                 var query =
-                    from dealer in xml.Descendants("Content").Descendants("attendees")
+                    from dealer in xml.Descendants("Content").Elements()
                     select string.Join(",",
                         getFields(xml)
                             .Select(f => dealer.Elements(f).Attributes("Text").Any()
@@ -80,6 +97,7 @@ namespace ConvertXmlToCsv
                 if (dr == DialogResult.OK)
                 {
                     string filename = saveFileDialog1.FileName;
+                 
                     File.WriteAllText(filename, csv);
                     MessageBox.Show("Save File Success");
                     wr.Close();
@@ -90,9 +108,10 @@ namespace ConvertXmlToCsv
 
         }
 
-        //public static List<Dictionary<string, string>>WritingInCSV(string absolutePath)
+        //public static List<Dictionary<string, string>> WritingInCSV(string absolutePath)
         //{
-
+            
+            
         //    return (null);
         //}
 
@@ -104,8 +123,6 @@ namespace ConvertXmlToCsv
         private void button2_Click(object sender, EventArgs e)
         {
             save();
-
-
         }
     }
 }
