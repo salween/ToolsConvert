@@ -44,76 +44,83 @@ namespace ConvertXmlToCsv
         {
             if (textBox1.Text != "")
             {
-
-                StreamReader wr = new StreamReader(textBox1.Text, true);
-                string fs = wr.ReadToEnd();
-
-                Func<string, string> csvFormat =
-      t => String.Format("\"{0}\"", t.Replace("\"", "\"\""));
-
-                var xml = XDocument.Parse(fs);
-
-                Func<XDocument, IEnumerable<string>> getFields =
-                    xd =>
-                        xd
-                            .Descendants("Content")
-                            .Elements()
-                            .SelectMany(d => d.Elements())
-                            .Select(e => e.Name.ToString())
-                            .Distinct();
-
-                var headers = String.Join(",", getFields(xml).Select(f => csvFormat(f)));
-
-                var header = "";
-                List<string> name = new List<string>();
-                foreach (var head in headers.Split(','))
+                try
                 {
-                    if (ContainsText(head))
+                    StreamReader wr = new StreamReader(textBox1.Text, true);
+                    string fs = wr.ReadToEnd();
+
+                    Func<string, string> csvFormat =
+          t => String.Format("\"{0}\"", t.Replace("\"", "\"\""));
+
+                    var xml = XDocument.Parse(fs);
+
+                    Func<XDocument, IEnumerable<string>> getFields =
+                        xd =>
+                            xd
+                                .Descendants("Content")
+                                 .Elements()
+                                .SelectMany(d => d.Elements())
+                                .Select(e => e.Name.ToString())
+                                .Distinct();
+
+
+                    var headers = String.Join(",", getFields(xml).Select(f => csvFormat(f)));
+
+                    var header = "";
+                    List<string> name = new List<string>();
+                    foreach (var head in headers.Split(','))
                     {
-                        name.Add(head);
+                        if (ContainsText(head))
+                        {
+                            name.Add(head);
+
+                        }
+                    }
+
+                    header = String.Join(",", name);
+
+
+                    var query =
+                        from dealer in xml.Descendants("Content").Elements()
+                        select string.Join(",",
+                            getFields(xml)
+                                .Select(f => dealer.Elements(f).Attributes("Text").Any()
+                                    ? dealer.Element(f).Attribute("Text").Value
+                                    : "")
+                                .Select(x => csvFormat(x)));
+
+                    var csv =
+                       String.Join(Environment.NewLine,
+                           new[] { header.Replace("TextField.", "") }.Concat(query));
+                    //var csv =
+                    //    String.Join(Environment.NewLine,
+                    //        new[] { headers }.Concat(query));
+
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                    saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+                    DialogResult dr = saveFileDialog1.ShowDialog();
+                    if (dr == DialogResult.OK)
+                    {
+                        string filename = saveFileDialog1.FileName;
+
+                        File.WriteAllText(filename, csv);
+
+                        XmltoCsv ss = new XmltoCsv();
+                      
+                        MessageBox.Show("Save File Success");
+                        wr.Close();
 
                     }
+
                 }
-
-                header = String.Join(",", name);
-
-
-                var query =
-                    from dealer in xml.Descendants("Content").Elements()
-                    select string.Join(",",
-                        getFields(xml)
-                            .Select(f => dealer.Elements(f).Attributes("Text").Any()
-                                ? dealer.Element(f).Value
-                                : "")
-                            .Select(x => csvFormat(x)));
-
-                var csv =
-                    String.Join(Environment.NewLine,
-                        new[] { headers }.Concat(query));
-
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-                DialogResult dr = saveFileDialog1.ShowDialog();
-                if (dr == DialogResult.OK)
+                catch (Exception e)
                 {
-                    string filename = saveFileDialog1.FileName;
-                 
-                    File.WriteAllText(filename, csv);
-                    MessageBox.Show("Save File Success");
-                    wr.Close();
-
+                    MessageBox.Show(e.ToString());
                 }
-
             }
-
-        }
-
-        //public static List<Dictionary<string, string>> WritingInCSV(string absolutePath)
-        //{
             
-            
-        //    return (null);
-        //}
+
+        }     
 
         private void button1_Click(object sender, EventArgs e)
         {
