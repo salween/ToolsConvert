@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using CsvHelper;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -63,6 +64,17 @@ namespace ConvertXmlToCsv
                                 .Select(e => e.Name.ToString())
                                 .Distinct();
 
+                    Func<XDocument, IEnumerable<string>> getFields2 =
+                        xd =>
+                            xd
+                                .Descendants("Content")
+                                .Elements()
+                                .SelectMany(d => d.Elements())
+                                .Where(e => e.Name.ToString().Contains("TextField."))
+                                .Select(e => e.Name.ToString())
+                                .Distinct()
+                                .ToList();
+
 
                     var headers = String.Join(",", getFields(xml).Select(f => csvFormat(f)));
 
@@ -83,7 +95,7 @@ namespace ConvertXmlToCsv
                     var query =
                         from dealer in xml.Descendants("Content").Elements()
                         select string.Join(",",
-                            getFields(xml)
+                            getFields2(xml)
                                 .Select(f => dealer.Elements(f).Attributes("Text").Any()
                                     ? dealer.Element(f).Attribute("Text").Value
                                     : "")
@@ -92,9 +104,7 @@ namespace ConvertXmlToCsv
                     var csv =
                        String.Join(Environment.NewLine,
                            new[] { header.Replace("TextField.", "") }.Concat(query));
-                    //var csv =
-                    //    String.Join(Environment.NewLine,
-                    //        new[] { headers }.Concat(query));
+                  
 
                     SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                     saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
@@ -102,11 +112,11 @@ namespace ConvertXmlToCsv
                     if (dr == DialogResult.OK)
                     {
                         string filename = saveFileDialog1.FileName;
+                      
+                        XmltoCsv ss = new XmltoCsv();
+                        ss.WriterInCSV(csv);
 
                         File.WriteAllText(filename, csv);
-
-                        XmltoCsv ss = new XmltoCsv();
-                      
                         MessageBox.Show("Save File Success");
                         wr.Close();
 

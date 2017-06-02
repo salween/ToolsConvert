@@ -20,6 +20,8 @@ namespace ConvertXmlToCsv
             using (TextWriter fileWriter = GenerateStreamFromString(textxml))
             {
                 var csv = new CsvWriter(fileWriter);
+                fileWriter.Write(textxml);              
+
             }
         }
 
