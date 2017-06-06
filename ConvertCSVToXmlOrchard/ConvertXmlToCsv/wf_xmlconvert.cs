@@ -48,12 +48,12 @@ namespace ConvertXmlToCsv
                 try
                 {
                     StreamReader wr = new StreamReader(textBox1.Text, true);
-                    string fs = wr.ReadToEnd();
+                    string read = wr.ReadToEnd();
 
                     Func<string, string> csvFormat =
           t => String.Format("\"{0}\"", t.Replace("\"", "\"\""));
 
-                    var xml = XDocument.Parse(fs);
+                    var xml = XDocument.Parse(read);
 
                     Func<XDocument, IEnumerable<string>> getFields =
                         xd =>
@@ -101,22 +101,23 @@ namespace ConvertXmlToCsv
                                     : "")
                                 .Select(x => csvFormat(x)));
 
-                    var csv =
+                    var csv = 
                        String.Join(Environment.NewLine,
                            new[] { header.Replace("TextField.", "") }.Concat(query));
                   
-
+                    List<string> value = new[] { header.Replace("TextField.","") }.Concat(query).ToList();
+                     
                     SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                     saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-                    DialogResult dr = saveFileDialog1.ShowDialog();
-                    if (dr == DialogResult.OK)
+                    DialogResult save = saveFileDialog1.ShowDialog();
+                    if (save == DialogResult.OK)
                     {
                         string filename = saveFileDialog1.FileName;
                       
-                        XmltoCsv ss = new XmltoCsv();
-                        ss.WriterInCSV(csv);
+                        XmltoCsv write = new XmltoCsv();
+                        write.WriterInCSV(filename , csv); 
 
-                        File.WriteAllText(filename, csv);
+                        //File.WriteAllText(filename, csv);
                         MessageBox.Show("Save File Success");
                         wr.Close();
 

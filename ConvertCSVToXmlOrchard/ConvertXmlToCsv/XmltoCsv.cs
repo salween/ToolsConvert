@@ -1,10 +1,14 @@
-﻿using CsvHelper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using CsvHelper;
+using ConvertXmlToCsv.Model;
 
 namespace ConvertXmlToCsv
 {
@@ -15,15 +19,25 @@ namespace ConvertXmlToCsv
 
         }
 
-        public void WriterInCSV(string textxml)
+        public void WriterInCSV(string filename , string textxml) 
         {
-            using (TextWriter fileWriter = GenerateStreamFromString(textxml))
+            using (TextWriter fileWriter = GenerateStreamFromString(filename))
+
+            //using (var write = new CsvWriter(filename))
             {
-                var csv = new CsvWriter(fileWriter);
-                fileWriter.Write(textxml);              
+
+                var write = new CsvWriter(fileWriter);
+                write.Configuration.Encoding = Encoding.UTF8;
+                foreach (var value in textxml)
+                {
+                    write.WriteRecord(value);
+                }
+                fileWriter.Close();
 
             }
+           
         }
+
 
         public StreamWriter GenerateStreamFromString(string s)
         {
@@ -35,3 +49,6 @@ namespace ConvertXmlToCsv
         }
     }
 }
+
+
+
