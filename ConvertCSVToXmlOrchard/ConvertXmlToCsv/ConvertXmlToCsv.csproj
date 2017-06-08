@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConvertXmlToCsv.cs" />
+    <Compile Include="ConvertXmlToCsvHelper.cs" />
     <Compile Include="Model\XmlModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +61,6 @@
     <Compile Include="wf_xmlconvert.Designer.cs">
       <DependentUpon>wf_xmlconvert.cs</DependentUpon>
     </Compile>
-    <Compile Include="XmltoCsv.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

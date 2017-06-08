@@ -36,101 +36,38 @@ namespace ConvertXmlToCsv
             }
         }
 
-        private static bool ContainsText(string name)
-        {
-            return name.Contains("TextField.");
-        }
+     
 
         private void save()
         {
             if (textBox1.Text != "")
             {
-                try
+                string path = textBox1.Text;
+
+                ConvertXmlToCsv xpath = new ConvertXmlToCsv();               
+
+                string csverite = xpath.csvwrite(path);
+
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+                DialogResult save = saveFileDialog1.ShowDialog();
+                if (save == DialogResult.OK)
                 {
-                    StreamReader wr = new StreamReader(textBox1.Text, true);
-                    string read = wr.ReadToEnd();
+                    string filename = saveFileDialog1.FileName;
 
-                    Func<string, string> csvFormat =
-          t => String.Format("\"{0}\"", t.Replace("\"", "\"\""));
+                    //var xcsv = new CsvWriter(filename);
 
-                    var xml = XDocument.Parse(read);
+                    //XmltoCsv write = new XmltoCsv();
 
-                    Func<XDocument, IEnumerable<string>> getFields =
-                        xd =>
-                            xd
-                                .Descendants("Content")
-                                 .Elements()
-                                .SelectMany(d => d.Elements())
-                                .Select(e => e.Name.ToString())
-                                .Distinct();
+                    //write.ConvertXmlToCsvHelper(filename, value);
 
-                    Func<XDocument, IEnumerable<string>> getFields2 =
-                        xd =>
-                            xd
-                                .Descendants("Content")
-                                .Elements()
-                                .SelectMany(d => d.Elements())
-                                .Where(e => e.Name.ToString().Contains("TextField."))
-                                .Select(e => e.Name.ToString())
-                                .Distinct()
-                                .ToList();
+                    File.WriteAllText(filename, csverite);
+                    MessageBox.Show("Save File Success");
+                   
 
-
-                    var headers = String.Join(",", getFields(xml).Select(f => csvFormat(f)));
-
-                    var header = "";
-                    List<string> name = new List<string>();
-                    foreach (var head in headers.Split(','))
-                    {
-                        if (ContainsText(head))
-                        {
-                            name.Add(head);
-
-                        }
-                    }
-
-                    header = String.Join(",", name);
-
-
-                    var query =
-                        from dealer in xml.Descendants("Content").Elements()
-                        select string.Join(",",
-                            getFields2(xml)
-                                .Select(f => dealer.Elements(f).Attributes("Text").Any()
-                                    ? dealer.Element(f).Attribute("Text").Value
-                                    : "")
-                                .Select(x => csvFormat(x)));
-
-                    var csv = 
-                       String.Join(Environment.NewLine,
-                           new[] { header.Replace("TextField.", "") }.Concat(query));
-                  
-                    List<string> value = new[] { header.Replace("TextField.","") }.Concat(query).ToList();
-                     
-                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                    saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-                    DialogResult save = saveFileDialog1.ShowDialog();
-                    if (save == DialogResult.OK)
-                    {
-                        string filename = saveFileDialog1.FileName;
-                      
-                        XmltoCsv write = new XmltoCsv();
-                        write.WriterInCSV(filename , csv); 
-
-                        //File.WriteAllText(filename, csv);
-                        MessageBox.Show("Save File Success");
-                        wr.Close();
-
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString());
                 }
             }
-            
-
+                                    
         }     
 
         private void button1_Click(object sender, EventArgs e)

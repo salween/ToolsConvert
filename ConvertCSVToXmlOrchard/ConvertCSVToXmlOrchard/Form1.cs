@@ -21,6 +21,8 @@ namespace ConvertCSVToXmlOrchard
         public Form1()
         {
             InitializeComponent();
+
+            textBox2.Text = "My Name";
         }
 
         private void OpenFilecsv()
@@ -52,7 +54,9 @@ namespace ConvertCSVToXmlOrchard
 
                     string filenames = textBox1.Text;
 
-                    XDocument doc = CsvToXml.ConvertCsvToXML(result, filenames);
+                    string TextExport = $"Create by {textBox2.Text}";
+
+                    XDocument doc = CsvToXml.ConvertCsvToXML(result, filenames, TextExport);
 
                     // save file       
 
@@ -141,6 +145,13 @@ namespace ConvertCSVToXmlOrchard
             }
             return mappingContents;
         }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = Text;
+        }
+
+        
     }
 
 }

@@ -21,14 +21,14 @@ namespace ConvertCSVToXmlOrchard
 
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
 
-        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
+        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename, string textsave)
         {
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
 
             //Create the element
             var xsyntax = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")); //<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
-            XComment comm = new XComment("Exported from Orchard"); // Create the Comment --->   <!--Exported from Orchard-->
+            XComment comm = new XComment(textsave); // Create the Comment --->   <!--Exported from Orchard-->
 
             var xHead = new XElement("Orchard");// Create the head  -->  <Orchard>
 
@@ -171,8 +171,6 @@ namespace ConvertCSVToXmlOrchard
             return xTypes;
         }
 
-
-
         private static XElement Content(Dictionary<string, string> columns, string FileName)
         {
             //string id = Guid.NewGuid().ToString().Replace("-", "");
@@ -200,8 +198,6 @@ namespace ConvertCSVToXmlOrchard
             var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow),new XAttribute("PublishedUtc", DateTime.UtcNow),new XAttribute("ModifiedUtc", DateTime.UtcNow));
 
             xrow.Add(Identifier, commonP);
-
-
 
             string[] keys = columns.Keys.ToArray();
             // looping for each column in data dic
@@ -341,11 +337,5 @@ namespace ConvertCSVToXmlOrchard
             }
             return items;
         }
-
-        //public class databasemodel
-        //{
-        //    public string ImportId { get; set; }
-        //    public string Iddentity { get; set; }
-        //}
     }
 }
