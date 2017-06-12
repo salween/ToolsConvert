@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -80,7 +78,12 @@ namespace ConvertXmlToCsv
 
                 xread.Close();
 
+
+
+     
                 return csv;
+
+
 
             }
             catch (Exception e)
@@ -91,6 +94,24 @@ namespace ConvertXmlToCsv
             }
         }
 
+        public void savefile(string savecsv)
+        {
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+            DialogResult save = saveFileDialog1.ShowDialog();
+            if (save == DialogResult.OK)
+            {         
+
+                string filename = saveFileDialog1.FileName;
+
+                File.WriteAllText(filename, savecsv);
+                MessageBox.Show("Save File Success");
+
+
+            }
+        }
+        
         private static bool ContainsText(string name)
         {
             return name.Contains("TextField.");

@@ -22,7 +22,7 @@ namespace ConvertCSVToXmlOrchard
         {
             InitializeComponent();
 
-            textBox2.Text = "My Name";
+            textBox2.Text = "My Name";        
         }
 
         private void OpenFilecsv()

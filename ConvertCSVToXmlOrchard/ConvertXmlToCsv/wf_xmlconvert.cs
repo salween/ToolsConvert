@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
-using CsvHelper;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Serialization;
+
 
 namespace ConvertXmlToCsv
 {
@@ -23,49 +13,34 @@ namespace ConvertXmlToCsv
 
         private void OpenFilexml()
         {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "Open File XML";
-            //fdlg.InitialDirectory = @"c:\";
-            fdlg.DefaultExt = "xml";
-            fdlg.Filter = "XML files (*.xml)|*.xml";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-            if (fdlg.ShowDialog() == DialogResult.OK)
+            OpenFileDialog openfile = new OpenFileDialog();
+            openfile.Title = "Open File XML";
+            //openfile.InitialDirectory = @"c:\";
+            openfile.DefaultExt = "xml";
+            openfile.Filter = "XML files (*.xml)|*.xml";
+            openfile.FilterIndex = 1;
+            openfile.RestoreDirectory = true;
+            if (openfile.ShowDialog() == DialogResult.OK)
             {
-                textBox1.Text = fdlg.FileName;
+                textBox1.Text = openfile.FileName;
             }
         }
 
      
 
-        private void save()
+        private void savefile()
         {
             if (textBox1.Text != "")
             {
                 string path = textBox1.Text;
 
-                ConvertXmlToCsv xpath = new ConvertXmlToCsv();               
+                ConvertXmlToCsvHelper xfilepath = new ConvertXmlToCsvHelper();
 
-                string csverite = xpath.csvwrite(path);
+                //string csvwrite = xfilepath.csvwrite(path);
 
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-                DialogResult save = saveFileDialog1.ShowDialog();
-                if (save == DialogResult.OK)
-                {
-                    string filename = saveFileDialog1.FileName;
+                xfilepath.savefilewritehelper(path);
 
-                    //var xcsv = new CsvWriter(filename);
 
-                    //XmltoCsv write = new XmltoCsv();
-
-                    //write.ConvertXmlToCsvHelper(filename, value);
-
-                    File.WriteAllText(filename, csverite);
-                    MessageBox.Show("Save File Success");
-                   
-
-                }
             }
                                     
         }     
@@ -77,7 +52,7 @@ namespace ConvertXmlToCsv
 
         private void button2_Click(object sender, EventArgs e)
         {
-            save();
+            savefile();
         }
     }
 }
