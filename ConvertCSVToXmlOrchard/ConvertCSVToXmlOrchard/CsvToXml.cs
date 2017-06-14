@@ -79,7 +79,7 @@ namespace ConvertCSVToXmlOrchard
             {
                 XDocument ValueFromDatabase = new XDocument();
                 ValueFromDatabase = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"));
-                ValueFromDatabase.Add(new XComment("Exported from Orchard"),XElement.Parse(listOfValueFromDatabase[0]));
+                ValueFromDatabase.Add(new XComment("Created by ToolsConvert"),XElement.Parse(listOfValueFromDatabase[0]));
                 ValueFromDatabase.Save(databasepath);
             }
             // save all content in format 'importid={id},identity={identity}'
