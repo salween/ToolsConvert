@@ -26,7 +26,7 @@ namespace ConvertXmlToCsv
             }
         }
 
-     
+
 
         private void savefile()
         {
@@ -42,8 +42,8 @@ namespace ConvertXmlToCsv
 
 
             }
-                                    
-        }     
+
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {

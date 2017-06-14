@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace ConvertXmlToCsv
 {
-   public class ConvertXmlToCsv
+    public class ConvertXmlToCsv
     {
         public ConvertXmlToCsv()
         {
@@ -80,7 +80,7 @@ namespace ConvertXmlToCsv
 
 
 
-     
+
                 return csv;
 
 
@@ -101,7 +101,7 @@ namespace ConvertXmlToCsv
             saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
             DialogResult save = saveFileDialog1.ShowDialog();
             if (save == DialogResult.OK)
-            {         
+            {
 
                 string filename = saveFileDialog1.FileName;
 
@@ -111,11 +111,11 @@ namespace ConvertXmlToCsv
 
             }
         }
-        
+
         private static bool ContainsText(string name)
         {
             return name.Contains("TextField.");
         }
-    
+
     }
 }

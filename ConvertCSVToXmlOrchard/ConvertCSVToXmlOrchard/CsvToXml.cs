@@ -44,7 +44,7 @@ namespace ConvertCSVToXmlOrchard
                 xContent.Add(Content(dataContents[i], dirName));
             }
 
-            xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/); 
+            xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
             xHead.Add(Reciperow(), xContentDe, xContent);
             xsyntax.Add(comm, xHead);
 
@@ -79,7 +79,7 @@ namespace ConvertCSVToXmlOrchard
             {
                 XDocument ValueFromDatabase = new XDocument();
                 ValueFromDatabase = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"));
-                ValueFromDatabase.Add(new XComment("Created by ToolsConvert"),XElement.Parse(listOfValueFromDatabase[0]));
+                ValueFromDatabase.Add(new XComment("Exported from Orchard"), XElement.Parse(listOfValueFromDatabase[0]));
                 ValueFromDatabase.Save(databasepath);
             }
             // save all content in format 'importid={id},identity={identity}'
@@ -117,7 +117,7 @@ namespace ConvertCSVToXmlOrchard
                 {
                     CSVModel obj = new CSVModel();
                     obj.ImportId = id.ImportId;
-                    obj.Identity = id.Iddentity;
+                    obj.Identity = id.Identity;
                     obj.Firstname = id.Firstname;
                     obj.Lastname = id.Lastname;
                     obj.Companyname = id.Companyname;
@@ -195,7 +195,7 @@ namespace ConvertCSVToXmlOrchard
 
             XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
 
-            var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow),new XAttribute("PublishedUtc", DateTime.UtcNow),new XAttribute("ModifiedUtc", DateTime.UtcNow));
+            var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow), new XAttribute("PublishedUtc", DateTime.UtcNow), new XAttribute("ModifiedUtc", DateTime.UtcNow));
 
             xrow.Add(Identifier, commonP);
 
