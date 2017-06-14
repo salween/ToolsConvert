@@ -117,7 +117,7 @@ namespace ConvertCSVToXmlOrchard
                 {
                     CSVModel obj = new CSVModel();
                     obj.ImportId = id.ImportId;
-                    obj.Identity = id.Iddentity;
+                    obj.Identity = id.Identity;
                     obj.Firstname = id.Firstname;
                     obj.Lastname = id.Lastname;
                     obj.Companyname = id.Companyname;
