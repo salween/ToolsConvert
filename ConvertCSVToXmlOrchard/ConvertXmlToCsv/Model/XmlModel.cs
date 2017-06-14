@@ -8,7 +8,7 @@ namespace ConvertXmlToCsv.Model
 {
     public class XmlModel
     {
-        //public string Iddentity { get; set; }
+        //public string Identity { get; set; }
 
         public string Firstname { get; set; }
 

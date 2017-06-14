@@ -10,7 +10,7 @@ namespace ConvertCSVToXmlOrchard
     {
         //Should have properties which correspond to the Column Names in the file
 
-        public string Iddentity { get; set; }
+        public string Identity { get; set; }
 
         public string Firstname { get; set; }
 

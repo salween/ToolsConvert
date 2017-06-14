@@ -97,7 +97,7 @@ namespace ConvertCSVToXmlOrchard
                 var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements()
                                 select new
                                 {
-                                    Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
+                                    Identity = s.Element("IdentityPart").Attribute("Identifier").Value,
                                     ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
                                     Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
                                     Lastname = s.Element("TextField.Lastname").Attribute("Text").Value,
@@ -117,7 +117,7 @@ namespace ConvertCSVToXmlOrchard
                 {
                     CSVModel obj = new CSVModel();
                     obj.ImportId = id.ImportId;
-                    obj.Iddentity = id.Iddentity;
+                    obj.Identity = id.Iddentity;
                     obj.Firstname = id.Firstname;
                     obj.Lastname = id.Lastname;
                     obj.Companyname = id.Companyname;
@@ -184,7 +184,7 @@ namespace ConvertCSVToXmlOrchard
 
             if (checkId != null)
             {
-                id = checkId.Iddentity;
+                id = checkId.Identity;
             }
             else
             {
