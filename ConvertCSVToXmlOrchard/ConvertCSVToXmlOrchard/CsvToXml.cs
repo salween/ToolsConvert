@@ -21,14 +21,14 @@ namespace ConvertCSVToXmlOrchard
 
         private static string databasepath = $"{Environment.CurrentDirectory}\\Database\\XmlDatabase.xml";
 
-        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename)
+        public static XDocument ConvertCsvToXML(List<Dictionary<string, string>> dataContents, string filename, string textsave)
         {
             string dirName = new DirectoryInfo(filename).Name.Replace(".csv", "");
 
             //Create the element
             var xsyntax = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")); //<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 
-            XComment comm = new XComment("Exported from Orchard"); // Create the Comment --->   <!--Exported from Orchard-->
+            XComment comm = new XComment(textsave); // Create the Comment --->   <!--Exported from Orchard-->
 
             var xHead = new XElement("Orchard");// Create the head  -->  <Orchard>
 
@@ -44,7 +44,7 @@ namespace ConvertCSVToXmlOrchard
                 xContent.Add(Content(dataContents[i], dirName));
             }
 
-            xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/);
+            xContentDe.Add(Type(dirName)/*, Part(rows[0], dirName)*/); 
             xHead.Add(Reciperow(), xContentDe, xContent);
             xsyntax.Add(comm, xHead);
 
@@ -64,20 +64,22 @@ namespace ConvertCSVToXmlOrchard
                 XElement ValueFromDatabase = XElement.Load(databasepath);
                 var loaddata = ValueFromDatabase.Descendants("Content");
                 loaddata.Remove();
-                if (loaddata.Any()) 
+                if (loaddata.Any())
                 {
 
                 }
-                else 
+                else
                 {
-                    ValueFromDatabase.Add(content); 
+                    ValueFromDatabase.Add(content);
                     ValueFromDatabase.Save(databasepath);
                 }
 
             }
             else
             {
-                var ValueFromDatabase = XElement.Load(listOfValueFromDatabase[0]); 
+                XDocument ValueFromDatabase = new XDocument();
+                ValueFromDatabase = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"));
+                ValueFromDatabase.Add(new XComment("Created by ToolsConvert"),XElement.Parse(listOfValueFromDatabase[0]));
                 ValueFromDatabase.Save(databasepath);
             }
             // save all content in format 'importid={id},identity={identity}'
@@ -93,29 +95,29 @@ namespace ConvertCSVToXmlOrchard
             {
                 var loaddatabasexml = XElement.Load(databasepath);
                 var loaddata = (from s in loaddatabasexml.Descendants("Content").Elements()
-                               select new
-                {
-                                   Iddentity = s.Element("IdentityPart").Attribute("Identifier").Value,
-                                   ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
-                                   Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
-                                   Lastname = s.Element("TextField.Lastname").Attribute("Text").Value,
-                                   Companyname = s.Element("TextField.Companyname").Attribute("Text").Value,
-                                   Title = s.Element("TextField.Title").Attribute("Text").Value,
-                                   Mailcity = s.Element("TextField.Mailcity").Attribute("Text").Value,
-                                   Mailstate = s.Element("TextField.Mailstate").Attribute("Text").Value,
-                                   Phone = s.Element("TextField.Phone").Attribute("Text").Value,
-                                   Email = s.Element("TextField.Email").Attribute("Text").Value,
-                                   Webpage = s.Element("TextField.Webpage").Attribute("Text").Value,
-                                   Spouse = s.Element("TextField.Spouse").Attribute("Text").Value,
-                                   Guest = s.Element("TextField.Guest").Attribute("Text").Value,
-                                   Firsttime = s.Element("TextField.Firsttime").Attribute("Text").Value
-                               }).ToList();
+                                select new
+                                {
+                                    Identity = s.Element("IdentityPart").Attribute("Identifier").Value,
+                                    ImportId = s.Element("TextField.Importid").Attribute("Text").Value,
+                                    Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
+                                    Lastname = s.Element("TextField.Lastname").Attribute("Text").Value,
+                                    Companyname = s.Element("TextField.Companyname").Attribute("Text").Value,
+                                    Title = s.Element("TextField.Title").Attribute("Text").Value,
+                                    Mailcity = s.Element("TextField.Mailcity").Attribute("Text").Value,
+                                    Mailstate = s.Element("TextField.Mailstate").Attribute("Text").Value,
+                                    Phone = s.Element("TextField.Phone").Attribute("Text").Value,
+                                    Email = s.Element("TextField.Email").Attribute("Text").Value,
+                                    Webpage = s.Element("TextField.Webpage").Attribute("Text").Value,
+                                    Spouse = s.Element("TextField.Spouse").Attribute("Text").Value,
+                                    Guest = s.Element("TextField.Guest").Attribute("Text").Value,
+                                    Firsttime = s.Element("TextField.Firsttime").Attribute("Text").Value
+                                }).ToList();
 
                 foreach (var id in loaddata)
                 {
                     CSVModel obj = new CSVModel();
                     obj.ImportId = id.ImportId;
-                    obj.Iddentity = id.Iddentity;
+                    obj.Identity = id.Iddentity;
                     obj.Firstname = id.Firstname;
                     obj.Lastname = id.Lastname;
                     obj.Companyname = id.Companyname;
@@ -169,8 +171,6 @@ namespace ConvertCSVToXmlOrchard
             return xTypes;
         }
 
-
-
         private static XElement Content(Dictionary<string, string> columns, string FileName)
         {
             //string id = Guid.NewGuid().ToString().Replace("-", "");
@@ -184,7 +184,7 @@ namespace ConvertCSVToXmlOrchard
 
             if (checkId != null)
             {
-                id = checkId.Iddentity;
+                id = checkId.Identity;
             }
             else
             {
@@ -195,11 +195,9 @@ namespace ConvertCSVToXmlOrchard
 
             XElement Identifier = new XElement("IdentityPart", new XAttribute("Identifier", id));
 
-            var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow));
+            var commonP = new XElement("CommonPart", new XAttribute("Owner", "/User.UserName=admin"), new XAttribute("CreatedUtc", DateTime.UtcNow),new XAttribute("PublishedUtc", DateTime.UtcNow),new XAttribute("ModifiedUtc", DateTime.UtcNow));
 
             xrow.Add(Identifier, commonP);
-
-
 
             string[] keys = columns.Keys.ToArray();
             // looping for each column in data dic
@@ -211,90 +209,92 @@ namespace ConvertCSVToXmlOrchard
                 // if key = importid then check to database
                 // if import id = 0001 then get identity from `importid=0001,identity=as932344` that mean identity is as932344
                 // if import id not equal 0001 in any rows from database then generate a new one.
+                if (checkId != null)
+                {
+                    if (ToOrchardFieldName(key.ToLower()) == "Firstname")
+                    {
+                        if (!value.Equals(checkId.Firstname))
+                        {
+                            checkId.Firstname = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Lastname")
+                    {
+                        if (!value.Equals(checkId.Lastname))
+                        {
+                            checkId.Lastname = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Companyname")
+                    {
+                        if (!value.Equals(checkId.Companyname))
+                        {
+                            checkId.Companyname = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Title")
+                    {
+                        if (!value.Equals(checkId.Title))
+                        {
+                            checkId.Title = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Mailcity")
+                    {
+                        if (!value.Equals(checkId.Mailcity))
+                        {
+                            checkId.Mailcity = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Mailstate")
+                    {
+                        if (!value.Equals(checkId.Mailstate))
+                        {
+                            checkId.Mailstate = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Phone")
+                    {
+                        if (!value.Equals(checkId.Phone))
+                        {
+                            checkId.Phone = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Email")
+                    {
+                        if (!value.Equals(checkId.Email))
+                        {
+                            checkId.Email = value;
+                        }
+                    }
+                    else if (ToOrchardFieldName(key.ToLower()) == "Webpage")
+                    {
+                        if (!value.Equals(checkId.Webpage))
+                        {
+                            checkId.Webpage = value;
 
-                if (ToOrchardFieldName(key.ToLower()) == "Firstname")
-                {
-                    if (!value.Equals(checkId.Firstname))
-                    {
-                        checkId.Firstname = value;
+                        }
                     }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Lastname")
-                {
-                    if (!value.Equals(checkId.Lastname))
+                    else if (ToOrchardFieldName(key.ToLower()) == "Spouse")
                     {
-                        checkId.Lastname = value;
+                        if (!value.Equals(checkId.Spouse))
+                        {
+                            checkId.Spouse = value;
+                        }
                     }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Companyname")
-                {
-                    if (!value.Equals(checkId.Companyname))
+                    else if (ToOrchardFieldName(key.ToLower()) == "Guest")
                     {
-                        checkId.Companyname = value;
+                        if (!value.Equals(checkId.Guest))
+                        {
+                            checkId.Guest = value;
+                        }
                     }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Title")
-                {
-                    if (!value.Equals(checkId.Title))
+                    else if (ToOrchardFieldName(key.ToLower()) == "Firsttime")
                     {
-                        checkId.Title = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Mailcity")
-                {
-                    if (!value.Equals(checkId.Mailcity))
-                    {
-                        checkId.Mailcity = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Mailstate")
-                {
-                    if (!value.Equals(checkId.Mailstate))
-                    {
-                        checkId.Mailstate = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Phone")
-                {
-                    if (!value.Equals(checkId.Phone))
-                    {
-                        checkId.Phone = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Email")
-                {
-                    if (!value.Equals(checkId.Email))
-                    {
-                        checkId.Email = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Webpage")
-                {
-                    if (!value.Equals(checkId.Webpage))
-                    {
-                        checkId.Webpage = value;
-
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Spouse")
-                {
-                    if (!value.Equals(checkId.Spouse))
-                    {
-                        checkId.Spouse = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "Guest")
-                {
-                    if (!value.Equals(checkId.Guest))
-                    {
-                        checkId.Guest = value;
-                    }
-                }
-                else if (ToOrchardFieldName(key.ToLower()) == "First-time")
-                {
-                    if (!value.Equals(checkId.Firsttime))
-                    {
-                        checkId.Firsttime = value;
+                        if (!value.Equals(checkId.Firsttime))
+                        {
+                            checkId.Firsttime = value;
+                        }
                     }
                 }
                 //Create the element var and Attributes with the field name and value
@@ -336,12 +336,6 @@ namespace ConvertCSVToXmlOrchard
                 items[i++] = m.Groups[0].Value.Trim('"').Trim(',').Trim('"').Trim();
             }
             return items;
-        }
-
-        public class databasemodel
-        {
-            public string ImportId { get; set; }
-            public string Iddentity { get; set; }
         }
     }
 }

@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConvertCSVToXmlOrchard
+namespace ConvertXmlToCsv.Model
 {
-    public class CSVModel
+    public class XmlModel
     {
-        //Should have properties which correspond to the Column Names in the file
-
-        public string Identity { get; set; }
+        //public string Identity { get; set; }
 
         public string Firstname { get; set; }
 
@@ -38,5 +36,5 @@ namespace ConvertCSVToXmlOrchard
 
         public string Firsttime { get; set; }
     }
-
 }
+
