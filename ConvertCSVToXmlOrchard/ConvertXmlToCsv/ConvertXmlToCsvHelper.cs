@@ -46,7 +46,8 @@ namespace ConvertXmlToCsv
 
         private List<XmlModel> modelxml(XDocument xdocument)
         {
-            
+            List<XmlModel> attendeesmodel = new List<XmlModel>();
+
             var loaddata = (from s in xdocument.Descendants("Content").Elements()
                             select new
                             {
@@ -54,8 +55,16 @@ namespace ConvertXmlToCsv
                                 Firstname = s.Element("TextField.Firstname").Attribute("Text").Value,
                                 Lastname = s.Element("TextField.Lastname").Attribute("Text").Value,
                                 Companyname = s.Element("TextField.Companyname").Attribute("Text").Value,
-                                Title = s.Element("TextField.Title").Attribute("Text").Value
-                              
+                                Title = s.Element("TextField.Title").Attribute("Text").Value,
+                                Mailcity = s.Element("TextField.Mailcity").Attribute("Text").Value,
+                                Mailstate = s.Element("TextField.Mailstate").Attribute("Text").Value,
+                                Phone = s.Element("TextField.Phone").Attribute("Text").Value,
+                                Email = s.Element("TextField.Email").Attribute("Text").Value,
+                                Webpage = s.Element("TextField.Webpage").Attribute("Text").Value,
+                                Spouse = s.Element("TextField.Spouse").Attribute("Text").Value,
+                                Guest = s.Element("TextField.Guest").Attribute("Text").Value,
+                                Firsttime = s.Element("TextField.Firsttime").Attribute("Text").Value
+
                             }).ToList();
 
             foreach (var id in loaddata)
@@ -66,10 +75,21 @@ namespace ConvertXmlToCsv
                 obj.Lastname = id.Lastname;
                 obj.Companyname = id.Companyname;
                 obj.Title = id.Title;
-               
+                obj.Mailcity = id.Mailcity;
+                obj.Mailstate = id.Mailstate;
+                obj.Phone = id.Phone;
+                obj.Email = id.Email;
+                obj.Webpage = id.Webpage;
+                obj.ImportId = id.ImportId;
+                obj.Spouse = id.Spouse;
+                obj.Guest = id.Guest;
+                obj.Firsttime = id.Firsttime;
+
+                attendeesmodel.Add(obj);
             }
 
-            return null;
+
+            return attendeesmodel;
         }
 
 
@@ -83,7 +103,7 @@ namespace ConvertXmlToCsv
             {
                 string filename = saveFileDialog1.FileName;
 
-                csvwritehelper(savecsv, filename); 
+                csvwritehelper(savecsv, filename);
 
                 MessageBox.Show("Save File Success");
 
